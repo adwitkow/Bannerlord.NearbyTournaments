@@ -44,7 +44,7 @@ namespace Bannerlord.NearbyTournaments
                     }),
                     GetConsequence(args => GameMenu.SwitchToMenu(NearbyTournamentsMenu)),
                     false,
-                    0);
+                    1);
 
                 gameStarter.AddGameMenu(NearbyTournamentsMenu,
                     $"{{{NearbyTournamentsVariable}}}",
