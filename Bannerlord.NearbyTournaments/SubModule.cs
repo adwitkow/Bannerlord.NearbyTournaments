@@ -31,36 +31,38 @@ namespace Bannerlord.NearbyTournaments
         {
             base.OnAfterGameInitializationFinished(game, starterObject);
 
-            if (game.GameType is Campaign)
+            if (game.GameType is not Campaign)
             {
-                var gameStarter = (CampaignGameStarter)starterObject;
-                gameStarter.AddGameMenuOption(TownArenaMenu,
-                    NearbyTournamentsOption,
-                    NearbyTournamentsText,
-                    GetCondition(args =>
-                    {
-                        args.optionLeaveType = GameMenuOption.LeaveType.Submenu;
-                        return Settlement.CurrentSettlement != null && Settlement.CurrentSettlement.IsTown;
-                    }),
-                    GetConsequence(args => GameMenu.SwitchToMenu(NearbyTournamentsMenu)),
-                    false,
-                    1);
-
-                gameStarter.AddGameMenu(NearbyTournamentsMenu,
-                    $"{{{NearbyTournamentsVariable}}}",
-                    new OnInitDelegate(this.GetNearbyTournaments));
-
-                gameStarter.AddGameMenuOption(NearbyTournamentsMenu,
-                    LeaveOption,
-                    LeaveText,
-                    GetCondition(args =>
-                    {
-                        args.optionLeaveType = GameMenuOption.LeaveType.Leave;
-                        return true;
-                    }),
-                    GetConsequence(args => GameMenu.SwitchToMenu(TownArenaMenu)),
-                    true);
+                return;
             }
+
+            var gameStarter = (CampaignGameStarter)starterObject;
+            gameStarter.AddGameMenuOption(TownArenaMenu,
+                NearbyTournamentsOption,
+                NearbyTournamentsText,
+                GetCondition(args =>
+                {
+                    args.optionLeaveType = GameMenuOption.LeaveType.Submenu;
+                    return Settlement.CurrentSettlement != null && Settlement.CurrentSettlement.IsTown;
+                }),
+                GetConsequence(args => GameMenu.SwitchToMenu(NearbyTournamentsMenu)),
+                false,
+                1);
+
+            gameStarter.AddGameMenu(NearbyTournamentsMenu,
+                $"{{{NearbyTournamentsVariable}}}",
+                new OnInitDelegate(this.GetNearbyTournaments));
+
+            gameStarter.AddGameMenuOption(NearbyTournamentsMenu,
+                LeaveOption,
+                LeaveText,
+                GetCondition(args =>
+                {
+                    args.optionLeaveType = GameMenuOption.LeaveType.Leave;
+                    return true;
+                }),
+                GetConsequence(args => GameMenu.SwitchToMenu(TownArenaMenu)),
+                true);
         }
 
         private void GetNearbyTournaments(MenuCallbackArgs args)
