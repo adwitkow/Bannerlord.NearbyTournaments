@@ -6,6 +6,8 @@ using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using System.Linq;
+using TaleWorlds.Library;
+using System.Collections.Generic;
 
 namespace Bannerlord.NearbyTournaments
 {
@@ -37,22 +39,28 @@ namespace Bannerlord.NearbyTournaments
             }
 
             var gameStarter = (CampaignGameStarter)starterObject;
+            AddNearbyTournamentsOptionToArenaMenu(gameStarter);
+            AddNearbyTournamentsMenuContainer(gameStarter);
+            AddLeaveOptionToNearbyTournamentsMenu(gameStarter);
+        }
+
+        private static void AddNearbyTournamentsOptionToArenaMenu(CampaignGameStarter gameStarter)
+        {
             gameStarter.AddGameMenuOption(TownArenaMenu,
                 NearbyTournamentsOption,
                 NearbyTournamentsText,
                 GetCondition(args =>
                 {
                     args.optionLeaveType = GameMenuOption.LeaveType.Submenu;
-                    return Settlement.CurrentSettlement != null && Settlement.CurrentSettlement.IsTown;
+                    return ShouldShowNearbyTournamentsOption();
                 }),
                 GetConsequence(args => GameMenu.SwitchToMenu(NearbyTournamentsMenu)),
                 false,
                 1);
+        }
 
-            gameStarter.AddGameMenu(NearbyTournamentsMenu,
-                $"{{{NearbyTournamentsVariable}}}",
-                new OnInitDelegate(this.GetNearbyTournaments));
-
+        private static void AddLeaveOptionToNearbyTournamentsMenu(CampaignGameStarter gameStarter)
+        {
             gameStarter.AddGameMenuOption(NearbyTournamentsMenu,
                 LeaveOption,
                 LeaveText,
@@ -65,10 +73,24 @@ namespace Bannerlord.NearbyTournaments
                 true);
         }
 
-        private void GetNearbyTournaments(MenuCallbackArgs args)
+        private static void AddNearbyTournamentsMenuContainer(CampaignGameStarter gameStarter)
+        {
+            gameStarter.AddGameMenu(NearbyTournamentsMenu,
+                $"{{{NearbyTournamentsVariable}}}",
+                new OnInitDelegate(GetNearbyTournaments));
+        }
+
+        private static bool ShouldShowNearbyTournamentsOption()
+        {
+            return Settlement.CurrentSettlement != null
+                && Settlement.CurrentSettlement.IsTown
+                && !HasActiveTournament(Settlement.CurrentSettlement.Town);
+        }
+
+        private static void GetNearbyTournaments(MenuCallbackArgs args)
         {
             var currentPosition = Settlement.CurrentSettlement.Position2D;
-            var tournamentSettlements = Town.AllTowns.Where(town => HasActiveTournament(town))
+            var tournamentSettlements = GetEligibleActiveTournamentTowns()
                 .Select(town => town.Settlement)
                 .OrderBy(settlement => settlement.Position2D.DistanceSquared(currentPosition))
                 .Take(3)
@@ -94,10 +116,18 @@ namespace Bannerlord.NearbyTournaments
             GameTexts.SetVariable(NearbyTournamentsVariable, textObject);
         }
 
+        private static IEnumerable<Town> GetEligibleActiveTournamentTowns()
+        {
+            return Town.AllTowns.Where(town =>
+            {
+                return HasActiveTournament(town)
+                    && town != Settlement.CurrentSettlement.Town;
+            });
+        }
+
         private static bool HasActiveTournament(Town town)
         {
-            return Campaign.Current.TournamentManager.GetTournamentGame(town) != null
-                && town != Settlement.CurrentSettlement.Town;
+            return Campaign.Current.TournamentManager.GetTournamentGame(town) != null;
         }
 
         private static GameMenuOption.OnConditionDelegate GetCondition(Func<MenuCallbackArgs, bool> method)
