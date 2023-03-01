@@ -3,7 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bannerlord.NearbyTournaments", "Bannerlord.NearbyTournaments\Bannerlord.NearbyTournaments.csproj", "{9BD768E5-0965-4AAC-8D9E-BA235AB5B491}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bannerlord.NearbyTournaments", "Bannerlord.NearbyTournaments\Bannerlord.NearbyTournaments.csproj", "{9BD768E5-0965-4AAC-8D9E-BA235AB5B491}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E040BC30-2753-4BDE-8C2A-2F6968DA5B92}"
+	ProjectSection(SolutionItems) = preProject
+		build\common.props = build\common.props
+		build\common.targets = build\common.targets
+		LICENSE.txt = LICENSE.txt
+		supported-game-versions.txt = supported-game-versions.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub Workflows", "GitHub Workflows", "{94F67E6C-7D87-42D0-8D60-F1AD4372D0AF}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,11 +27,14 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9BD768E5-0965-4AAC-8D9E-BA235AB5B491}.Debug|x64.ActiveCfg = Debug|x64
 		{9BD768E5-0965-4AAC-8D9E-BA235AB5B491}.Debug|x64.Build.0 = Debug|x64
-		{9BD768E5-0965-4AAC-8D9E-BA235AB5B491}.Release|x64.ActiveCfg = Release|x64
-		{9BD768E5-0965-4AAC-8D9E-BA235AB5B491}.Release|x64.Build.0 = Release|x64
+		{9BD768E5-0965-4AAC-8D9E-BA235AB5B491}.Release|x64.ActiveCfg = Stable_Debug|x64
+		{9BD768E5-0965-4AAC-8D9E-BA235AB5B491}.Release|x64.Build.0 = Stable_Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{94F67E6C-7D87-42D0-8D60-F1AD4372D0AF} = {E040BC30-2753-4BDE-8C2A-2F6968DA5B92}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45D51900-5D15-4123-AAF0-8EC9E5D868E8}
