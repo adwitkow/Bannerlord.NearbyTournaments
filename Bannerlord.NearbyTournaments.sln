@@ -7,16 +7,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bannerlord.NearbyTournament
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E040BC30-2753-4BDE-8C2A-2F6968DA5B92}"
 	ProjectSection(SolutionItems) = preProject
-		build\common.props = build\common.props
-		build\common.targets = build\common.targets
-		LICENSE.txt = LICENSE.txt
 		supported-game-versions.txt = supported-game-versions.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub Workflows", "GitHub Workflows", "{94F67E6C-7D87-42D0-8D60-F1AD4372D0AF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{AFE0941F-1009-497C-A2BF-1B6635A9AEE1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{85A45875-07EE-458E-809A-BD917E484A1B}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
 		.github\workflows\publish.yml = .github\workflows\publish.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{7EFF1722-7645-477E-A37F-E3E98E699D77}"
+	ProjectSection(SolutionItems) = preProject
+		build\common.props = build\common.props
+		build\common.targets = build\common.targets
 	EndProjectSection
 EndProject
 Global
@@ -34,7 +39,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{94F67E6C-7D87-42D0-8D60-F1AD4372D0AF} = {E040BC30-2753-4BDE-8C2A-2F6968DA5B92}
+		{85A45875-07EE-458E-809A-BD917E484A1B} = {AFE0941F-1009-497C-A2BF-1B6635A9AEE1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45D51900-5D15-4123-AAF0-8EC9E5D868E8}
