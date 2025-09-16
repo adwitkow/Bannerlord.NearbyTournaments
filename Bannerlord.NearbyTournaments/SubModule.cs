@@ -1,13 +1,14 @@
-﻿using System;
-using TaleWorlds.CampaignSystem.GameMenus;
-using TaleWorlds.CampaignSystem.Settlements;
+﻿using Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.GameMenus;
+using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
-using System.Linq;
-using TaleWorlds.Library;
-using System.Collections.Generic;
 
 namespace Bannerlord.NearbyTournaments
 {
@@ -89,10 +90,9 @@ namespace Bannerlord.NearbyTournaments
 
         private static void GetNearbyTournaments(MenuCallbackArgs args)
         {
-            var currentPosition = Settlement.CurrentSettlement.Position2D;
             var tournamentSettlements = GetEligibleActiveTournamentTowns()
+                .OrderBy(CalculateDistanceFromCurrentSettlement)
                 .Select(town => town.Settlement)
-                .OrderBy(settlement => settlement.Position2D.DistanceSquared(currentPosition))
                 .Take(3)
                 .ToList();
 
@@ -123,6 +123,14 @@ namespace Bannerlord.NearbyTournaments
                 return HasActiveTournament(town)
                     && town != Settlement.CurrentSettlement.Town;
             });
+        }
+
+        private static float CalculateDistanceFromCurrentSettlement(Town target)
+        {
+            return DistanceHelper.FindClosestDistanceFromSettlementToSettlement(
+                Settlement.CurrentSettlement,
+                target.Settlement,
+                MobileParty.NavigationType.All);
         }
 
         private static bool HasActiveTournament(Town town)
