@@ -127,14 +127,14 @@ namespace Bannerlord.NearbyTournaments
 
         private static float CalculateDistanceFromCurrentSettlement(Town target)
         {
-#if v130
+#if LOWER_THAN_1_3
+            var currentPosition = Settlement.CurrentSettlement.Position2D;
+            return target.Settlement.Position2D.DistanceSquared(currentPosition);
+#else
             return DistanceHelper.FindClosestDistanceFromSettlementToSettlement(
                 Settlement.CurrentSettlement,
                 target.Settlement,
                 MobileParty.NavigationType.All);
-#else
-            var currentPosition = Settlement.CurrentSettlement.Position2D;
-            return target.Settlement.Position2D.DistanceSquared(currentPosition);
 #endif
         }
 
