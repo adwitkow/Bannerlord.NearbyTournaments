@@ -52,10 +52,10 @@ jobs:
           echo "" >> RELEASE_NOTES.md
 
           if [ -z "$PREV_TAG" ]; then
-            git log --pretty=format:"- %s — %an (%h)" >> RELEASE_NOTES.md
+            git log --no-merges --oneline --no-decorate --pretty=format:"- %s - %an (%h)" >> RELEASE_NOTES.md
           else
             git log ${PREV_TAG}..HEAD \
-              --pretty=format:"- %s — %an (%h)" >> RELEASE_NOTES.md
+              --no-merges --oneline --no-decorate --pretty=format:"- %s - %an (%h)" >> RELEASE_NOTES.md
           fi
 
       - name: Create GitHub release
