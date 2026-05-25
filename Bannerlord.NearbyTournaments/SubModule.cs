@@ -19,7 +19,9 @@ namespace Bannerlord.NearbyTournaments
 
         private const string NearbyTournamentsOption = "nearby_tournaments";
         private const string LeaveOption = "nearby_tournaments_leave";
+        private const string TrackTournamentsOption = "nearby_tournaments_track";
 
+        private const string TrackTournamentsText = "{=track_tournaments}Track tournaments";
         private const string NearbyTournamentsText = "{=kn5mme59}Check the nearby tournaments";
         private const string ManyTournamentsText = $"{{=pinSMuMe}}Well, there's one starting up at {{{ClosestTournamentVariable}}}, then another at {{{NextClosestTournamentVariable}}}. You should probably be able to get to either of those, if you move quickly.";
         private const string SingleTournamentText = $"{{=2WnruiBw}}I know of one starting up at {{{ClosestTournamentVariable}}}. You should be able to get there if you move quickly enough.";
@@ -29,6 +31,8 @@ namespace Bannerlord.NearbyTournaments
         private const string NearbyTournamentsVariable = "NEARBY_TOURNAMENTS";
         private const string ClosestTournamentVariable = "CLOSEST_TOURNAMENT";
         private const string NextClosestTournamentVariable = "NEXT_CLOSEST_TOURNAMENT";
+
+        private static Settlement[] TournamentTowns = Array.Empty<Settlement>();
 
         public override void OnAfterGameInitializationFinished(Game game, object starterObject)
         {
@@ -42,7 +46,7 @@ namespace Bannerlord.NearbyTournaments
             var gameStarter = (CampaignGameStarter)starterObject;
             AddNearbyTournamentsOptionToArenaMenu(gameStarter);
             AddNearbyTournamentsMenuContainer(gameStarter);
-            AddLeaveOptionToNearbyTournamentsMenu(gameStarter);
+            AddNearbyTournamentsMenuOptions(gameStarter);
         }
 
         private static void AddNearbyTournamentsOptionToArenaMenu(CampaignGameStarter gameStarter)
@@ -81,6 +85,25 @@ namespace Bannerlord.NearbyTournaments
                 new OnInitDelegate(GetNearbyTournaments));
         }
 
+        private static void AddNearbyTournamentsMenuOptions(CampaignGameStarter gameStarter)
+        {
+            AddTrackersToNearbyTournamentsMenu(gameStarter);
+            AddLeaveOptionToNearbyTournamentsMenu(gameStarter);
+        }
+
+        private static void AddTrackersToNearbyTournamentsMenu(CampaignGameStarter gameStarter)
+        {
+            gameStarter.AddGameMenuOption(NearbyTournamentsMenu,
+                TrackTournamentsOption,
+                TrackTournamentsText,
+                GetCondition(args =>
+                {
+                    args.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
+                    return TournamentTowns.Length > 0;
+                }),
+                GetConsequence(_ => Array.ForEach(TournamentTowns, t => TrackSettlement(t))));
+        }
+
         private static bool ShouldShowNearbyTournamentsOption()
         {
             return Settlement.CurrentSettlement != null
@@ -90,23 +113,23 @@ namespace Bannerlord.NearbyTournaments
 
         private static void GetNearbyTournaments(MenuCallbackArgs args)
         {
-            var tournamentSettlements = GetEligibleActiveTournamentTowns()
+            TournamentTowns = GetEligibleActiveTournamentTowns()
                 .OrderBy(CalculateDistanceFromCurrentSettlement)
                 .Select(town => town.Settlement)
-                .Take(3)
-                .ToList();
+                .Take(2)
+                .ToArray();
 
             TextObject textObject;
-            if (tournamentSettlements.Count > 1)
+            if (TournamentTowns.Length > 1)
             {
                 textObject = new TextObject(ManyTournamentsText);
-                textObject.SetTextVariable(ClosestTournamentVariable, tournamentSettlements[0].EncyclopediaLinkWithName);
-                textObject.SetTextVariable(NextClosestTournamentVariable, tournamentSettlements[1].EncyclopediaLinkWithName);
+                textObject.SetTextVariable(ClosestTournamentVariable, TournamentTowns[0].EncyclopediaLinkWithName);
+                textObject.SetTextVariable(NextClosestTournamentVariable, TournamentTowns[1].EncyclopediaLinkWithName);
             }
-            else if (tournamentSettlements.Count == 1)
+            else if (TournamentTowns.Length == 1)
             {
                 textObject = new TextObject(SingleTournamentText);
-                textObject.SetTextVariable(ClosestTournamentVariable, tournamentSettlements[0].EncyclopediaLinkWithName);
+                textObject.SetTextVariable(ClosestTournamentVariable, TournamentTowns[0].EncyclopediaLinkWithName);
             }
             else
             {
@@ -151,6 +174,14 @@ namespace Bannerlord.NearbyTournaments
         private static GameMenuOption.OnConsequenceDelegate GetConsequence(Action<MenuCallbackArgs> method)
         {
             return new GameMenuOption.OnConsequenceDelegate(method);
+        }
+
+        private static void TrackSettlement(Settlement settlement)
+        {
+            if (!Campaign.Current.VisualTrackerManager.CheckTracked(settlement))
+            {
+                Campaign.Current.VisualTrackerManager.RegisterObject(settlement);
+            }
         }
     }
 }
