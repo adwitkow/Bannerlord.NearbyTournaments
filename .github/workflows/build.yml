@@ -21,6 +21,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+
     steps:
     - name: Get repo name
       id: get-repo-name
@@ -85,7 +86,7 @@ jobs:
         Remove-Item -Recurse $impl;
         
     - name: Upload build
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v5
       with:
         name: Build
         path: ./bannerlord/
