@@ -1,0 +1,8 @@
+<Project>
+
+  <PropertyGroup>
+    <ModuleId>Bannerlord.NearbyTournaments</ModuleId>
+    <ModuleName>Quick Nearby Tournaments</ModuleName>
+  </PropertyGroup>
+
+</Project>
